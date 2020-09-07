@@ -22,10 +22,10 @@ class TwitchController {
         twitchChat.say(sendChannel, sendMessage);
     }
 
-    static async Connect(twitchChannel, twitchBotUsername, twitchToken) {
+    static async Connect(twitchChannel, twitchToken) {
         //  Store off the given channel, username, and token
         channel = twitchChannel.toLowerCase();
-        username = twitchBotUsername;
+        username = "a";
         token = twitchToken;
 
         // Instantiate the TwitchJS objects

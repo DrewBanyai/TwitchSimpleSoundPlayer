@@ -1,7 +1,7 @@
-//  The TwitchJS library requires that these three variables be named "token", "username", and channel"
+//  The TwitchJS library requires that these variables be named "token" and channel"
 //  You can generate a token here: https://twitchapps.com/tmi/
 let token = "";
-let username = "";
+let username = "no_user"
 let channel = "";
 
 //  This value will be grabbed by TwitchJS once it connects using the token, and does not need to be set here.
@@ -27,5 +27,4 @@ let URL_OPTIONS = getOptionsInURL();
 
 //  If new URL arguments are put in the URL, this will grab those and override the ones set in code (if any)
 if (URL_OPTIONS && URL_OPTIONS.token) { token = "oauth:" + URL_OPTIONS.token; }
-if (URL_OPTIONS && URL_OPTIONS.username) { username = URL_OPTIONS.username; }
 if (URL_OPTIONS && URL_OPTIONS.channel) { channel = URL_OPTIONS.channel; }
