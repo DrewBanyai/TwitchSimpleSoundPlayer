@@ -25,7 +25,6 @@ class TwitchController {
     static async Connect(twitchChannel, twitchToken) {
         //  Store off the given channel, username, and token
         channel = twitchChannel.toLowerCase();
-        username = "a";
         token = twitchToken;
 
         // Instantiate the TwitchJS objects
@@ -87,6 +86,8 @@ class TwitchController {
             case "HOST_TARGET_WENT_OFFLINE":        if (SHOW_LOW_LEVEL_MESSAGES) console.log("HOST TARGET OFFLINE: " + message.message + " on " + message.username);    break;
             case "USER_BANNED":                     if (SHOW_LOW_LEVEL_MESSAGES) console.log("USER BANNED: " + message.username);                                       break;
             case "MSG_DUPLICATE":                   if (SHOW_LOW_LEVEL_MESSAGES) console.log("MESSAGE DUPLICATE");                                                      break;
+            case "FOLLOWERS_ON":                    if (SHOW_LOW_LEVEL_MESSAGES) console.log("FOLLOWERS_ON");                                                           break;
+            case "FOLLOWERS_OFF":                   if (SHOW_LOW_LEVEL_MESSAGES) console.log("FOLLOWERS_OFF");                                                          break;
 
             case "WHISPER":                         if (SHOW_WHISPER_MESSAGES) console.log("WHISPER from " + message.username + ": " + message.message);                break;
 

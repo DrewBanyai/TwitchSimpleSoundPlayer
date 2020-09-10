@@ -1,7 +1,7 @@
 class SiteMainArea {
     constructor(options) {
         this.options = options;
-        this.elements = { ControlScreen: null, ChatContainer: null, };
+        this.elements = { ScreenChooser: null, ControlScreen: null, SoundTogglesScreen: null, };
         this.content = this.generateContent();
     }
 
@@ -11,13 +11,18 @@ class SiteMainArea {
         let centeredMainArea = new Container({ id: "CenteredMainArea", style: { margin: "auto", width: "920px", height: "100%", overflow: "hidden", }, });
         container.appendChild(centeredMainArea.content);
 
+        this.elements.ScreenChooser = new ScreenChooser({});
+        centeredMainArea.appendChild(this.elements.ScreenChooser.content);
+
         this.elements.ControlScreen = new ControlScreen({});
         centeredMainArea.appendChild(this.elements.ControlScreen.content);
 
-        //  Create the twitch chat stream early so we can pass it into other classes
-        this.elements.ChatContainer = new TwitchChatScreen({});
-        this.elements.ChatContainer.setHidden(true);
-        centeredMainArea.appendChild(this.elements.ChatContainer.content);
+        this.elements.SoundTogglesScreen = new SoundTogglesScreen({});
+        centeredMainArea.appendChild(this.elements.SoundTogglesScreen.content);
+
+        this.elements.ControlScreen.setToggleScreen(this.elements.SoundTogglesScreen);
+
+        if (soundsList) { this.elements.SoundTogglesScreen.addSoundsList(soundsList); }
 
         this.setOnChatMessage();
 
@@ -34,7 +39,9 @@ class SiteMainArea {
     }
 
     ShowMainAreaUI(show) {
+        this.elements.ScreenChooser.setHidden(!show);
         this.elements.ControlScreen.setHidden(!show);
-        this.elements.ChatContainer.content.style.display = show ? "block" : "none";
+
+        this.elements.SoundTogglesScreen.setHidden(show);
     }
 }
