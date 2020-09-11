@@ -59,9 +59,11 @@ class ControlScreen {
         if (message[0] !== "!") { return false; }
         if (message.includes(" ")) { return false; }
 
+
         let command = message.substr(1, message.length - 1);
         let volume = 100;
         if (this.togglesScreen) {
+            if (message === "!soundslist") { this.togglesScreen.showSoundsList(); }
             if (!this.togglesScreen.getSoundAllowed(command)) { return false; }
             if (this.togglesScreen.getSoundDelayed(command)) {
                 return false;

@@ -22,8 +22,6 @@ class SiteMainArea {
 
         this.elements.ControlScreen.setToggleScreen(this.elements.SoundTogglesScreen);
 
-        if (soundsList) { this.elements.SoundTogglesScreen.addSoundsList(soundsList); }
-
         this.setOnChatMessage();
 
         return container.content;

@@ -4,6 +4,7 @@ class SoundTogglesScreen {
         this.elements = {};
         this.soundToggles = {};
         this.content = this.generateContent();
+        if (soundsList) { this.addSoundsList(soundsList); }
     }
 
     generateContent() {
@@ -23,6 +24,29 @@ class SoundTogglesScreen {
     }
 
     addSoundsList(soundList) { for (let i = 0; i < soundList.length; ++i) { this.getSoundToggle(soundList[i]); } }
+
+    showSoundsList() {
+        if (!soundsList) { return; }
+        
+        let messageTexts = [];
+        let messageTextIndex = 0;
+        for (let i = 0; i < soundsList.length; ++i) {
+            if (messageTexts.length === messageTextIndex) { messageTexts.push(""); }
+            if ((messageTexts[messageTextIndex] + ", !" + soundsList[i]).length > 500) {
+                messageTextIndex += 1;
+                if (messageTexts.length === messageTextIndex) { messageTexts.push(""); }
+            }
+
+            if (messageTexts[messageTextIndex].length > 0) { messageTexts[messageTextIndex] += ", !"; }
+            else messageTexts[messageTextIndex] += "!";
+            messageTexts[messageTextIndex] += soundsList[i];
+        }
+
+        //  Now that we have the list(s) of commands, send them out
+        for (let i = 0; i < messageTexts.length; ++i) {
+            setTimeout(() => { TwitchController.SendChatMessage(channel, messageTexts[i]); }, 1 + (i * 500));
+        }
+    }
 
     getVolume(soundName) { return this.getSoundToggle(soundName).getVolume(); }
     getSoundDelayed(soundName) { return this.getSoundToggle(soundName).getSoundDelayed(); }
