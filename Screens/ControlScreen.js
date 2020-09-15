@@ -3,6 +3,7 @@ class ControlScreen {
         this.options = options;
         this.elements = { };
         this.togglesScreen = null;
+        this.youtubeToggles = {};
         this.content = this.generateContent();
     }
 
@@ -63,7 +64,7 @@ class ControlScreen {
         let command = message.substr(1, message.length - 1);
         let volume = 100;
         if (this.togglesScreen) {
-            if (message === "!soundslist") { this.togglesScreen.showSoundsList(); }
+            if (message === "!soundslist") { this.togglesScreen.showSoundsList(); return true; }
             if (!this.togglesScreen.getSoundAllowed(command)) { return false; }
             if (this.togglesScreen.getSoundDelayed(command)) {
                 return false;
@@ -78,16 +79,22 @@ class ControlScreen {
         return result;
     }
 
-    processSecretSound(messageUser, message) {
+    async processSecretSound(messageUser, message) {
         if (messageUser.toLowerCase() !== "drewthebear") { return false; }
-
-        const secretTriggers = {
-            "This game is pretty spoopy.": "tbyvHIpvIXA",
-            "god damn dude": "cwySw6Gv0Oo",
-        };
-
-        if (secretTriggers.hasOwnProperty(message)) {
-            this.playYoutubeSound(secretTriggers[message]);
+        
+        let messageArgs = message.split(" ");
+        if ((messageArgs.length === 3) && (messageArgs[0] === "!yt")) {
+            this.youtubeToggles[messageArgs[1]] = messageArgs[2];
+            return;
+        }
+        else {
+            let keys = Object.keys(this.youtubeToggles);
+            console.log(keys);
+            for (let i = 0; i < keys.length; ++i) {
+                if (messageArgs.includes(keys[i])) {
+                    return this.playYoutubeSound(this.youtubeToggles[keys[i]]);
+                }
+            }
         }
     }
 
