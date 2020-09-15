@@ -56,10 +56,9 @@ class ControlScreen {
     async processMessage(messageUser, message) {
         if (!message) { return false; }
         if (message.length < 2) { return false; }
-        if (this.processSecretSound(messageUser, message)) { return true; }
+        if (await this.processSecretSound(messageUser, message)) { return true; }
         if (message[0] !== "!") { return false; }
         if (message.includes(" ")) { return false; }
-
 
         let command = message.substr(1, message.length - 1);
         let volume = 100;
