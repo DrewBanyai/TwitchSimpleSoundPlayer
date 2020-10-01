@@ -54,8 +54,8 @@ class LoginBox {
     async loadTwitchLoginInput(element) {
         //  Load data from storage if it exists
         let storageTSSP = this.loadStorageTSSP();
-        if (!channel) { channel = storageTSSP.channel; }
-        if (!token) { token = storageTSSP.token; }
+        if (!channel) { channel = storageTSSP.channel ? storageTSSP.channel : ""; }
+        if (!token) { token = storageTSSP.token ? storageTSSP.token : ""; }
         if (!SOUNDS_FOLDER_PATH) { SOUNDS_FOLDER_PATH = storageTSSP.folderPath; }
 
         let twitchDetailsTitleLabel = new Label({ id: "TwitchDetailsTitleLabel", attributes: { value: "Twitch Details", }, style: { fontWeight: "bold", padding: "0px 0px 10px 0px", }, });
@@ -92,10 +92,11 @@ class LoginBox {
             channel = twitchChannelName.getValue();
             token = twitchOAuthToken.getValue();
             SOUNDS_FOLDER_PATH = soundsFolderPath.getValue();
-            if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "/"; }
 
             //  Save off the folder path specified to both local storage and program memory
             this.saveStorageTSSP({ channel: channel, token: token, folderPath: SOUNDS_FOLDER_PATH });
+            
+            if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "\\"; }
 
             //  Attempt to connect to the twitch channel
             let connectResult = await TwitchController.Connect(channel, token);
