@@ -35,25 +35,29 @@ class LoginBox {
         let inputTextInput = new TextInput({ id: inputID + "TextInput", attributes: { value: inputValue }, style: { width: "300px", margin: "0px 5px 0px 5px" }, });
         inputPairing.appendChild(inputTextInput.content);
 
+        inputPairing.highlight = (highlight) => { return inputTitleLabel.setColor(highlight ? "rgb(255, 0, 0)" : "rgb(120, 120, 120)"); }
+
         inputPairing.getValue = () => { return inputTextInput.getValue(); }
         inputPairing.setValue = (val) => { return inputTextInput.setValue(val); }
         return inputPairing;
     }
 
-    loadSoundsFolderPath() {
+    loadStorageTSSP() {
         let storageTSSP = localStorage.getItem('DrewTheBear_TSSP');
-        storageTSSP = (storageTSSP ? JSON.parse(storageTSSP) : {});
-        return (storageTSSP.folderPath ? storageTSSP.folderPath : "");
+        return (storageTSSP ? JSON.parse(storageTSSP) : { channelName: "", oauth: "", folderPath: "" });
     }
 
-    saveSoundsFolderPath(folderPath) {
-        let storageTSSP = localStorage.getItem('DrewTheBear_TSSP');
-        storageTSSP = (storageTSSP ? JSON.parse(storageTSSP) : {});
-        storageTSSP.folderPath = folderPath;
-        localStorage.setItem("DrewTheBear_TSSP", JSON.stringify(storageTSSP));
+    saveStorageTSSP(storageData) {
+        localStorage.setItem("DrewTheBear_TSSP", JSON.stringify(storageData));
     }
 
     async loadTwitchLoginInput(element) {
+        //  Load data from storage if it exists
+        let storageTSSP = this.loadStorageTSSP();
+        if (!channel) { channel = storageTSSP.channel; }
+        if (!token) { token = storageTSSP.token; }
+        if (!SOUNDS_FOLDER_PATH) { SOUNDS_FOLDER_PATH = storageTSSP.folderPath; }
+
         let twitchDetailsTitleLabel = new Label({ id: "TwitchDetailsTitleLabel", attributes: { value: "Twitch Details", }, style: { fontWeight: "bold", padding: "0px 0px 10px 0px", }, });
         element.appendChild(twitchDetailsTitleLabel.content);
 
@@ -74,8 +78,7 @@ class LoginBox {
         let folderDetailsTitleLabel = new Label({ id: "FolderDetailsTitleLabel", attributes: { value: "Folder Details", }, style: { fontWeight: "bold", padding: "0px 0px 10px 0px", }, });
         element.appendChild(folderDetailsTitleLabel.content);
 
-        let folderPathSaved = this.loadSoundsFolderPath();
-        let soundsFolderPath = this.createInputPairing("FolderPath", "Folder Path:", folderPathSaved)
+        let soundsFolderPath = this.createInputPairing("FolderPath", "Folder Path:", SOUNDS_FOLDER_PATH)
         element.appendChild(soundsFolderPath.content);
 
         let connectButton = new PrimaryButton({ id: "TwitchConnectButton", secondary: "true", attributes: { value: "connect", }, style: { width: "100px", height: "24px", position: "relative", top: "6px", margin: "0px auto 10px auto", }, });
@@ -85,13 +88,17 @@ class LoginBox {
                 return;
             }
 
-            //  Save off the folder path specified to both local storage and program memory
+            //  Save off the connection and folder data to local memory and local storage
+            channel = twitchChannelName.getValue();
+            token = twitchOAuthToken.getValue();
             SOUNDS_FOLDER_PATH = soundsFolderPath.getValue();
-            this.saveSoundsFolderPath(SOUNDS_FOLDER_PATH);
             if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "/"; }
 
+            //  Save off the folder path specified to both local storage and program memory
+            this.saveStorageTSSP({ channel: channel, token: token, folderPath: SOUNDS_FOLDER_PATH });
+
             //  Attempt to connect to the twitch channel
-            let connectResult = await TwitchController.Connect(twitchChannelName.getValue(), twitchOAuthToken.getValue());
+            let connectResult = await TwitchController.Connect(channel, token);
             if (!connectResult) { console.warn("Failed to connect with given channel name and oauth token. Please try again."); return; }
 
             //  Move to the next program state
