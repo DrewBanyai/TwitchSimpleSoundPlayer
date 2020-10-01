@@ -5,6 +5,7 @@ let LoadSiteContent = async () => {
 
 let SITE_HEADER = null;
 let SITE_MAIN_AREA = null;
+let SOUNDS_FOLDER_PATH = "";
 
 let loadSiteHeader = () => {
 	//  The SiteHeader which will be attached to the top of the screen and persists across all pages

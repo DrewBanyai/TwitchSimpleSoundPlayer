@@ -40,10 +40,13 @@ class TwitchController {
         twitchChat.on(TwitchJs.Chat.Events.ALL, this.handleTwitchMessage);
         
         //  Connect and save off our personal username
-        let connectResult = await twitchChat.connect();
-        if (!connectResult) { console.warn("Failed to connect to twitch channel!"); return false; }
-        if (!twitchChat._userState) { console.warn("Invalid user state returned when connecting to channel!"); return false; }
-        myUsername = twitchChat._userState.username;
+        try {
+            let connectResult = await twitchChat.connect();
+            if (!connectResult) { console.warn("Failed to connect to twitch channel!"); return false; }
+            if (!twitchChat._userState) { console.warn("Invalid user state returned when connecting to channel!"); return false; }
+            myUsername = twitchChat._userState.username;
+        }
+        catch (error) { console.error(error); return false; }
 
         TwitchController.AddTwitchMessageCallback("MSG_RATELIMIT", () => {
             //  If we hit the message rate limit, try to resend the same message again in 500ms
@@ -104,6 +107,7 @@ class TwitchController {
             case "DISCONNECTED":                    if (SHOW_PROBLEM_MESSAGES) console.log("DISCONNECTED");                                                             break;
             case "ERROR_ENCOUNTERED":               if (SHOW_PROBLEM_MESSAGES) console.log("ERROR ENCOUNTERED");                                                        break;
             case "CLEARMSG":                        if (SHOW_PROBLEM_MESSAGES) console.log("CLEARMSG: " + message.username);                                            break;
+            case "AUTHENTICATION_FAILED":           if (SHOW_PROBLEM_MESSAGES) console.log("AUTHENTICATION_FAILED: " + message.username);                               break;
 
             default:                                if (SHOW_UNHANDLED_MESSAGES) console.log("UNHANDLED:", message);                                                    break;
         }

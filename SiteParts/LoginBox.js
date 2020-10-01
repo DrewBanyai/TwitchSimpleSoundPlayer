@@ -36,7 +36,21 @@ class LoginBox {
         inputPairing.appendChild(inputTextInput.content);
 
         inputPairing.getValue = () => { return inputTextInput.getValue(); }
+        inputPairing.setValue = (val) => { return inputTextInput.setValue(val); }
         return inputPairing;
+    }
+
+    loadSoundsFolderPath() {
+        let storageTSSP = localStorage.getItem('DrewTheBear_TSSP');
+        storageTSSP = (storageTSSP ? JSON.parse(storageTSSP) : {});
+        return (storageTSSP.folderPath ? storageTSSP.folderPath : "");
+    }
+
+    saveSoundsFolderPath(folderPath) {
+        let storageTSSP = localStorage.getItem('DrewTheBear_TSSP');
+        storageTSSP = (storageTSSP ? JSON.parse(storageTSSP) : {});
+        storageTSSP.folderPath = folderPath;
+        localStorage.setItem("DrewTheBear_TSSP", JSON.stringify(storageTSSP));
     }
 
     async loadTwitchLoginInput(element) {
@@ -54,9 +68,33 @@ class LoginBox {
         oauthQuestionIcon.content.style.display = "inline-flex";
         oauthQuestionIcon.content.onclick = () => { window.open("https://twitchapps.com/tmi/"); }
 
+        let divider = new Container({ id: "Divider", style: { minHeight: "10px", }, })
+        element.appendChild(divider.content);
+
+        let folderDetailsTitleLabel = new Label({ id: "FolderDetailsTitleLabel", attributes: { value: "Folder Details", }, style: { fontWeight: "bold", padding: "0px 0px 10px 0px", }, });
+        element.appendChild(folderDetailsTitleLabel.content);
+
+        let folderPathSaved = this.loadSoundsFolderPath();
+        let soundsFolderPath = this.createInputPairing("FolderPath", "Folder Path:", folderPathSaved)
+        element.appendChild(soundsFolderPath.content);
+
         let connectButton = new PrimaryButton({ id: "TwitchConnectButton", secondary: "true", attributes: { value: "connect", }, style: { width: "100px", height: "24px", position: "relative", top: "6px", margin: "0px auto 10px auto", }, });
         connectButton.SetOnClick(async () => {
+            if (!soundsFolderPath.getValue() || !twitchChannelName.getValue() || !twitchOAuthToken.getValue()) {
+                console.warn("User did not provide necessary data in the login box. Try again.");
+                return;
+            }
+
+            //  Save off the folder path specified to both local storage and program memory
+            SOUNDS_FOLDER_PATH = soundsFolderPath.getValue();
+            this.saveSoundsFolderPath(SOUNDS_FOLDER_PATH);
+            if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "/"; }
+
+            //  Attempt to connect to the twitch channel
             let connectResult = await TwitchController.Connect(twitchChannelName.getValue(), twitchOAuthToken.getValue());
+            if (!connectResult) { console.warn("Failed to connect with given channel name and oauth token. Please try again."); return; }
+
+            //  Move to the next program state
             SITE_HEADER.removeLoginBox();
             SITE_MAIN_AREA.ShowMainAreaUI(connectResult);
             if (this.loginCallback) { this.loginCallback(); }

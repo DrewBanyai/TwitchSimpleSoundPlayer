@@ -15,9 +15,10 @@ class SoundTogglesScreen {
         return container.content;
     }
 
-    getSoundToggle(soundName) {
+    getSoundToggle(soundName, doNotCreate) {
         if (this.soundToggles.hasOwnProperty(soundName)) { return this.soundToggles[soundName]; }
-        
+        if (doNotCreate) { return null; }
+
         this.soundToggles[soundName] = new SoundToggle(soundName);
         if (this.content) { this.content.appendChild(this.soundToggles[soundName].content); }
         return this.soundToggles[soundName];
@@ -48,10 +49,10 @@ class SoundTogglesScreen {
         }
     }
 
-    getVolume(soundName) { return this.getSoundToggle(soundName).getVolume(); }
-    getSoundDelayed(soundName) { return this.getSoundToggle(soundName).getSoundDelayed(); }
-    getSoundAllowed(soundName) { return this.getSoundToggle(soundName).getSoundAllowed(); }
-    setSoundPlayed(soundName) { return this.getSoundToggle(soundName).setSoundPlayed(); }
+    getVolume(soundName, doNotCreate) { let sound = this.getSoundToggle(soundName, doNotCreate); return (sound ? sound.getVolume() : 100); }
+    getSoundDelayed(soundName, doNotCreate) { let sound = this.getSoundToggle(soundName, doNotCreate); return (sound ? sound.getSoundDelayed() : 0); }
+    getSoundAllowed(soundName, doNotCreate) { let sound = this.getSoundToggle(soundName, doNotCreate); return (sound ? sound.getSoundAllowed() : true); }
+    setSoundPlayed(soundName, doNotCreate) { let sound = this.getSoundToggle(soundName, doNotCreate); return (sound ? sound.setSoundPlayed() : null); }
 
     setHidden(hidden) { this.content.style.display = hidden ? "none" : ""; }
 }

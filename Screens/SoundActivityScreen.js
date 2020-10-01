@@ -1,4 +1,4 @@
-class ControlScreen {
+class SoundActivityScreen {
     constructor(options) {
         this.options = options;
         this.elements = { };
@@ -8,10 +8,7 @@ class ControlScreen {
     }
 
     generateContent() {
-        let container = new Container({ id: "ControlScreen", style: { width: "920px", height: "100%", display: "none", backgroundColor: "rgb(64, 64 ,64)", padding: "6px 0px 6px 0px", color: "rgb(200, 200, 200)", overflow: "auto", textAlign: "center", }, });
-        
-        let playerDiv = new Container({ id: "player", style: { position: "absolute", top: "-9999px", left: "-9999px" }});
-        container.appendChild(playerDiv.content);
+        let container = new Container({ id: "SoundActivityScreen", style: { width: "920px", height: "100%", display: "none", backgroundColor: "rgb(64, 64 ,64)", padding: "6px 0px 6px 0px", color: "rgb(200, 200, 200)", overflow: "auto", textAlign: "center", }, });
 
         container.content.setHidden = (hidden) => this.setHidden(hidden);
 
@@ -68,17 +65,17 @@ class ControlScreen {
                 if (soundsListOn) { this.togglesScreen.showSoundsList(); }
                 return true;
             }
-            if (!this.togglesScreen.getSoundAllowed(command)) { return false; }
-            if (this.togglesScreen.getSoundDelayed(command)) {
+            if (!this.togglesScreen.getSoundAllowed(command, true)) { return false; }
+            if (this.togglesScreen.getSoundDelayed(command, true)) {
                 return false;
             }
-            volume = this.togglesScreen.getVolume(command);
+            volume = this.togglesScreen.getVolume(command, true);
         }
         let soundFile = this.createSoundFileSource(command);
         if (!this.doesFileExist(soundFile)) { return false; }
 
-        if (this.togglesScreen) { this.togglesScreen.setSoundPlayed(command); }
-        let result = await this.playLocalSound(messageUser, soundFile, volume);
+        let result = await this.playLocalSound(messageUser, soundFile, command, volume);
+        if (this.togglesScreen && result) { this.togglesScreen.setSoundPlayed(command, false); }
         return result;
     }
 
@@ -92,7 +89,7 @@ class ControlScreen {
         }
         else {
             let keys = Object.keys(this.youtubeToggles);
-            console.log(keys);
+            //console.log(keys);
             for (let i = 0; i < keys.length; ++i) {
                 if (messageArgs.includes(keys[i])) {
                     return this.playYoutubeSound(this.youtubeToggles[keys[i]]);
@@ -102,7 +99,7 @@ class ControlScreen {
     }
 
     createSoundFileSource(sound) {
-        return ("./Sounds/" + sound + ".mp3");
+        return ("file://" + SOUNDS_FOLDER_PATH + sound + ".mp3");
     }
 
     doesFileExist(soundFile) {
@@ -111,7 +108,7 @@ class ControlScreen {
         return fileCheck.open('r');
     }
 
-    async playLocalSound(messageUser, soundFile, volume) {
+    async playLocalSound(messageUser, soundFile, soundFileShort, volume) {
         if (!soundFile) { return false; }
         try {
             let audio = new Audio(soundFile);
@@ -120,17 +117,17 @@ class ControlScreen {
                     /* the audio is now playable; play it if permissions allow */
                     audio.volume = volume / 100.0;
                     audio.play();
-                    this.addProcessResultLine(true, "User " + messageUser + " played sound file '" + soundFile + "'");
+                    this.addProcessResultLine(true, "User " + messageUser + " played sound file '" + soundFileShort + "'");
                     resolve(true)
                 });
                 audio.onerror = () => {
-                    this.addProcessResultLine(false, "User " + messageUser + " attempted to play '" + soundFile + "' but it failed. Does this file exist?");
+                    this.addProcessResultLine(false, "User " + messageUser + " attempted to play '" + soundFileShort + "' but it failed. Does this file exist?");
                     resolve(false)
                 }
             });
         }
         catch (except) {
-            console.warn("Sound could not be played: " + soundFile);
+            console.warn("Sound could not be played: " + soundFileShort);
             console.error(except);
             return false;
         }
