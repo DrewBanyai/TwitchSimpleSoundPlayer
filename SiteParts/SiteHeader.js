@@ -54,7 +54,7 @@ class SiteHeader {
 
         let drewTheBearIcon = new Image({ id: "DrewTheBearIcon", style: { width: "36px", height: "36px", margin: "5px", borderRadius: "50%", border: "3px solid rgb(200, 200, 200)", cursor: "pointer", }});
         drewTheBearIcon.setValue("./Images/DrewTheBear_Icon.png");
-        drewTheBearIcon.content.onclick = () => { window.open("http://twitch.tv/DrewTheBear"); }
+        drewTheBearIcon.content.onclick = () => { window.open("https://twitch.tv/DrewTheBear"); }
         container.appendChild(drewTheBearIcon.content);
 
         let githubIcon = new Image({ id: "GithubIcon", style: { width: "36px", height: "36px", margin: "5px", borderRadius: "50%", border: "3px solid rgb(200, 200, 200)", cursor: "pointer", }});

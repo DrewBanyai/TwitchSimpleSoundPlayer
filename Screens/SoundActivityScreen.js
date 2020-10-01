@@ -4,11 +4,19 @@ class SoundActivityScreen {
         this.elements = { };
         this.togglesScreen = null;
         this.youtubeToggles = {};
+        this.youtubeReady = false;
         this.content = this.generateContent();
     }
 
     generateContent() {
         let container = new Container({ id: "SoundActivityScreen", style: { width: "920px", height: "100%", display: "none", backgroundColor: "rgb(64, 64 ,64)", padding: "6px 0px 6px 0px", color: "rgb(200, 200, 200)", overflow: "auto", textAlign: "center", }, });
+
+        //  Set up hidden youtube player
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/player_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        window.onYouTubePlayerAPIReady = () => { this.youtubeReady = true; }
 
         container.content.setHidden = (hidden) => this.setHidden(hidden);
 
@@ -16,22 +24,26 @@ class SoundActivityScreen {
     }
 
     playYoutubeSound(videoID) {
+        if (!this.youtubeReady) { console.warning("Youtube player isn't ready to be used yet!"); return; }
+
         let player = new YT.Player('player', {
-            videoId: videoID, // this is the id of the video at youtube (the stuff after "?v=")
-            loop: true,
+            height: '390',
+            width: '640',
+            videoId: videoID,
             events: {
-                onReady: function (e) {
-                    console.log("Youtube video is loaded: " + videoID);
-                    e.target.playVideo();
+                'onReady': (event) => {
+                    event.target.playVideo();
                 },
-                onStateChange: function (event) {
+                'onStateChange': (event) => {
                     switch (event.data) {
                         case YT.PlayerState.PLAYING:            console.log("Youtube video started playing: " + videoID);                       break;
-                        case 0:                                 setTimeout(() => {
-                            player.stopVideo();
-                            player.destroy();
-                            player = null;
-                        }, 500);        break;
+                        case YT.PlayerState.ENDED:
+                            setTimeout(() => {
+                                player.stopVideo();
+                                player.destroy();
+                                player = null;
+                            }, 500);
+                            break;
                     }
                 }
             }
