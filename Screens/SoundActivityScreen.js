@@ -121,6 +121,7 @@ class SoundActivityScreen {
     }
 
     async playLocalSound(messageUser, soundFile, soundFileShort, volume) {
+        /*
         let fileData = {
             lastModified: 1565564214508,
             lastModifiedDate: "Sun Aug 11 2019 15:56:54 GMT-0700 (Pacific Daylight Time) {}",
@@ -131,8 +132,10 @@ class SoundActivityScreen {
         };
         var file = URL.createObjectURL(fileData); 
         audio_player.src = file; 
+        audio_player.srcObject = fileData; 
         audio_player.play();
         return;
+        */
 
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", soundFile, false);
@@ -147,14 +150,16 @@ class SoundActivityScreen {
                 }
             }
         }
-        rawFile.send(null)
+        rawFile.send(null);
+        return;
 
+        /*
         if (!soundFile) { return false; }
         try {
             let audio = new Audio(soundFile);
             return new Promise(resolve => {
                 audio.addEventListener("canplaythrough", event => {
-                    /* the audio is now playable; play it if permissions allow */
+                    //  The audio is now playable; play it if permissions allow
                     audio.volume = volume / 100.0;
                     audio.play();
                     this.addProcessResultLine(true, "User " + messageUser + " played sound file '" + soundFileShort + "'");
@@ -171,6 +176,7 @@ class SoundActivityScreen {
             console.error(except);
             return false;
         }
+        */
     }
 
     setToggleScreen(toggleScreen) { this.togglesScreen = toggleScreen; }
