@@ -121,6 +121,34 @@ class SoundActivityScreen {
     }
 
     async playLocalSound(messageUser, soundFile, soundFileShort, volume) {
+        let fileData = {
+            lastModified: 1565564214508,
+            lastModifiedDate: "Sun Aug 11 2019 15:56:54 GMT-0700 (Pacific Daylight Time) {}",
+            name: soundFile,
+            size: 9318328,
+            type: "audio/mpeg",
+            webkitRelativePath: ""
+        };
+        var file = URL.createObjectURL(fileData); 
+        audio_player.src = file; 
+        audio_player.play();
+        return;
+
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", soundFile, false);
+        rawFile.onreadystatechange = function ()
+        {
+            if(rawFile.readyState === 4)
+            {
+                if(rawFile.status === 200 || rawFile.status == 0)
+                {
+                    var allText = rawFile.responseText;
+                    alert(allText);
+                }
+            }
+        }
+        rawFile.send(null)
+
         if (!soundFile) { return false; }
         try {
             let audio = new Audio(soundFile);
