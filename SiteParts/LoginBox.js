@@ -72,6 +72,7 @@ class LoginBox {
         oauthQuestionIcon.content.style.display = "inline-flex";
         oauthQuestionIcon.content.onclick = () => { window.open("https://twitchapps.com/tmi/"); }
 
+        /*
         let divider = new Container({ id: "Divider", style: { minHeight: "10px", }, })
         element.appendChild(divider.content);
 
@@ -80,10 +81,11 @@ class LoginBox {
 
         let soundsFolderPath = this.createInputPairing("FolderPath", "Folder Path:", SOUNDS_FOLDER_PATH)
         element.appendChild(soundsFolderPath.content);
+        */
 
         let connectButton = new PrimaryButton({ id: "TwitchConnectButton", secondary: "true", attributes: { value: "connect", }, style: { width: "100px", height: "24px", position: "relative", top: "6px", margin: "0px auto 10px auto", }, });
         connectButton.SetOnClick(async () => {
-            if (!soundsFolderPath.getValue() || !twitchChannelName.getValue() || !twitchOAuthToken.getValue()) {
+            if (/*!soundsFolderPath.getValue() || */!twitchChannelName.getValue() || !twitchOAuthToken.getValue()) {
                 console.warn("User did not provide necessary data in the login box. Try again.");
                 return;
             }
@@ -91,12 +93,11 @@ class LoginBox {
             //  Save off the connection and folder data to local memory and local storage
             channel = twitchChannelName.getValue();
             token = twitchOAuthToken.getValue();
-            SOUNDS_FOLDER_PATH = soundsFolderPath.getValue();
 
             //  Save off the folder path specified to both local storage and program memory
-            this.saveStorageTSSP({ channel: channel, token: token, folderPath: SOUNDS_FOLDER_PATH });
-            
-            if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "\\"; }
+            //SOUNDS_FOLDER_PATH = soundsFolderPath.getValue();
+            //this.saveStorageTSSP({ channel: channel, token: token, folderPath: SOUNDS_FOLDER_PATH });
+            //if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "\\"; }
 
             //  Attempt to connect to the twitch channel
             let connectResult = await TwitchController.Connect(channel, token);

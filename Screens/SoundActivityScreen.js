@@ -111,7 +111,7 @@ class SoundActivityScreen {
     }
 
     createSoundFileSource(sound) {
-        return ("file://" + SOUNDS_FOLDER_PATH + sound + ".mp3");
+        return ("./Sounds/" /*+ SOUNDS_FOLDER_PATH*/ + sound + ".mp3");
     }
 
     doesFileExist(soundFile) {
