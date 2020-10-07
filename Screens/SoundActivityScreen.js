@@ -62,17 +62,31 @@ class SoundActivityScreen {
         if (this.content.children.length >= 30) { this.content.removeChild(this.content.children[0]); }
     }
 
-    async processMessage(messageUser, message) {
-        if (!message) { return false; }
-        if (message.length < 2) { return false; }
-        if (await this.processSecretSound(messageUser, message)) { return true; }
-        if (message[0] !== "!") { return false; }
-        if (message.includes(" ")) { return false; }
+    async processMessage(message) {
+        if (!message || !message.username || !message.message || !message.tags) { return false; }
+        let messageUser = message.username;
+        let messageText = message.message;
 
-        let command = message.substr(1, message.length - 1);
+        if (messageText.length < 2) { return false; }
+        if (await this.processSecretSound(messageUser, messageText)) { return true; }
+        if (messageText[0] !== "!" || messageText.includes(" ")) { return false; }
+
+        //  Check against sound playing limitations
+        let isStreamer = (message.tags.badges && (message.tags.badges.broadcaster !== undefined) && (message.tags.badges.broadcaster === "1"));
+        let isModerator = (message.tags.mod && (message.tags.mod === "1"));
+        let isSubscriber = (message.tags.subscriber && (message.tags.subscriber === "1"));
+        if (OPTIONS_WHO_IS_ALLOWED !== "Anyone") {
+            switch (OPTIONS_WHO_IS_ALLOWED) {
+                case "Only Me (Streamer)":      if (!isStreamer) { return false; }          break;
+                case "Only Moderators":         if (!isModerator) { return false; }         break;
+                case "Only Subscribers":        if (!isSubscriber) { return false; }        break;
+            }
+        }
+
+        let command = messageText.substr(1, messageText.length - 1);
         let volume = 100;
         if (this.togglesScreen) {
-            if (message === "!soundslist") {
+            if (messageText === "!soundslist") {
                 let soundsListOn = (!URL_OPTIONS || !URL_OPTIONS.soundsList || (URL_OPTIONS.soundsList === "true"));
                 if (soundsListOn) { this.togglesScreen.showSoundsList(); }
                 return true;

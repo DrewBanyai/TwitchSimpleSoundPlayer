@@ -20,6 +20,9 @@ class SiteMainArea {
         this.elements.SoundTogglesScreen = new SoundTogglesScreen({});
         centeredMainArea.appendChild(this.elements.SoundTogglesScreen.content);
 
+        this.elements.SystemOptionsScreen = new SystemOptionsScreen({});
+        centeredMainArea.appendChild(this.elements.SystemOptionsScreen.content);
+
         this.elements.SoundActivityScreen.setToggleScreen(this.elements.SoundTogglesScreen);
 
         this.setOnChatMessage();
@@ -30,7 +33,7 @@ class SiteMainArea {
     setOnChatMessage() {
         TwitchController.AddTwitchMessageCallback("PRIVMSG", async (message) => {
             //  If the command is accepted by the Control Screen and processed successfully, we're done here
-            if (await this.elements.SoundActivityScreen.processMessage(message.username, message.message)) { return true; };
+            if (await this.elements.SoundActivityScreen.processMessage(message)) { return true; };
 
             //console.log("PRIVMSG: ", message);
         });
