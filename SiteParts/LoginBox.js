@@ -42,18 +42,9 @@ class LoginBox {
         return inputPairing;
     }
 
-    loadStorageTSSP() {
-        let storageTSSP = localStorage.getItem('DrewTheBear_TSSP');
-        return (storageTSSP ? JSON.parse(storageTSSP) : { channelName: "", oauth: "", folderPath: "" });
-    }
-
-    saveStorageTSSP(storageData) {
-        localStorage.setItem("DrewTheBear_TSSP", JSON.stringify(storageData));
-    }
-
     async loadTwitchLoginInput(element) {
         //  Load data from storage if it exists
-        let storageTSSP = this.loadStorageTSSP();
+        let storageTSSP = getStorageTSSP();
         if (!channel) { channel = storageTSSP.channel ? storageTSSP.channel : ""; }
         if (!token) { token = storageTSSP.token ? storageTSSP.token : ""; }
         if (!SOUNDS_FOLDER_PATH) { SOUNDS_FOLDER_PATH = storageTSSP.folderPath; }
@@ -94,9 +85,14 @@ class LoginBox {
             channel = twitchChannelName.getValue();
             token = twitchOAuthToken.getValue();
 
+            //  Save off the data to auto-fill next time
+            let storageTSSP = getStorageTSSP();
+            storageTSSP.channel = channel;
+            storageTSSP.token = token;
+            setStorageTSSP(storageTSSP);
+
             //  Save off the folder path specified to both local storage and program memory
             //SOUNDS_FOLDER_PATH = soundsFolderPath.getValue();
-            //this.saveStorageTSSP({ channel: channel, token: token, folderPath: SOUNDS_FOLDER_PATH });
             //if (!["/", "\\"].includes(SOUNDS_FOLDER_PATH[SOUNDS_FOLDER_PATH.length - 1])) { SOUNDS_FOLDER_PATH += "\\"; }
 
             //  Attempt to connect to the twitch channel
