@@ -11,3 +11,4 @@ To use:
 
 Notes:
 - If you want to have the channel and oauth set by default, you can put them into the URL by adding &channel=XXX&token=YYY into the URL after .htm, where XXX is the channel name in lowercase, and YYY is your oauth without the "oauth:" part at the beginning of the string. Those values should be automatically filled out when you click login if you used the URL correctly. Then you can just bookmark that URL and you won't have to fill out that data anymore.
+- If you want to auto login with the given channel and token provided, you can add &autoLogin=true at the end of the URL vars and it will auto-login. This can be used to supply a browser URL in OBS that will let you load the sound player there instead of having to open it manually each stream.

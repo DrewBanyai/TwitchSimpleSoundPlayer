@@ -26,7 +26,7 @@ class SiteHeader {
             events: {
                 click: () => {
                     if (this.loginBox === null) {
-                        this.loginBox = new LoginBox({ loginCallback: () => { this.loginButton.content.style.display = "none"; } });
+                        this.loginBox = new LoginBox({ loginCallback: () => { this.removeLoginHeaderButton(); } });
                         this.centeredHeader.appendChild(this.loginBox.content);
                     }
                     else { this.removeLoginBox(); }
@@ -41,6 +41,10 @@ class SiteHeader {
         this.loadSiteLoginLogoutBox(loginButtonBox);
 
         return container.content;
+    }
+
+    removeLoginHeaderButton() {
+        this.loginButton.content.style.display = "none";
     }
 
     removeLoginBox() {

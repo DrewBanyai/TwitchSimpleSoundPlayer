@@ -1,6 +1,7 @@
 let LoadSiteContent = async () => {
     loadSiteHeader();
-    loadSiteMainArea();
+	loadSiteMainArea();
+	checkAutoLogin();
 };
 
 let SITE_HEADER = null;
@@ -30,4 +31,16 @@ let loadSiteMainArea = () => {
 	//  The SiteHeader which will be attached to the top of the screen and persists across all pages
 	SITE_MAIN_AREA = new SiteMainArea({});
 	document.body.appendChild(SITE_MAIN_AREA.content);
+};
+
+let checkAutoLogin = async () => {
+	if (!URL_OPTIONS || !URL_OPTIONS.autoLogin) { return; }
+	if (!token || !channel) { return; }
+
+	let connectResult = await TwitchController.Connect(channel, token);
+	if (!connectResult) { console.warn("Failed to connect with given channel name and oauth token. Please try again."); return; }
+
+	//  Move to the next program state
+	SITE_HEADER.removeLoginHeaderButton();
+	SITE_MAIN_AREA.ShowMainAreaUI(connectResult);
 };
