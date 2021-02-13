@@ -86,7 +86,7 @@ class SoundActivityScreen {
         let command = messageText.substr(1, messageText.length - 1);
         let volume = 100;
         if (this.togglesScreen) {
-            if (messageText === "!soundslist") {
+            if ((messageText === "!soundslist") || (messageText === "!soundlist") || (messageText === "!sounds")) {
                 let soundsListOn = (!URL_OPTIONS || !URL_OPTIONS.soundsList || (URL_OPTIONS.soundsList === "true"));
                 if (soundsListOn) { this.togglesScreen.showSoundsList(); }
                 return true;
