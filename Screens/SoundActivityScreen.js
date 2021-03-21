@@ -3,51 +3,15 @@ class SoundActivityScreen {
         this.options = options;
         this.elements = { };
         this.togglesScreen = null;
-        this.youtubeToggles = {};
-        this.youtubeReady = false;
         this.content = this.generateContent();
     }
 
     generateContent() {
         let container = new Container({ id: "SoundActivityScreen", style: { width: "920px", height: "100%", display: "none", backgroundColor: "rgb(64, 64 ,64)", padding: "6px 0px 6px 0px", color: "rgb(200, 200, 200)", overflow: "auto", textAlign: "center", }, });
-
-        //  Set up hidden youtube player
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/player_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        window.onYouTubePlayerAPIReady = () => { this.youtubeReady = true; }
-
+        
         container.content.setHidden = (hidden) => this.setHidden(hidden);
 
         return container.content;
-    }
-
-    playYoutubeSound(videoID) {
-        if (!this.youtubeReady) { console.warning("Youtube player isn't ready to be used yet!"); return; }
-
-        let player = new YT.Player('player', {
-            height: '390',
-            width: '640',
-            videoId: videoID,
-            events: {
-                'onReady': (event) => {
-                    event.target.playVideo();
-                },
-                'onStateChange': (event) => {
-                    switch (event.data) {
-                        case YT.PlayerState.PLAYING:            console.log("Youtube video started playing: " + videoID);                       break;
-                        case YT.PlayerState.ENDED:
-                            setTimeout(() => {
-                                player.stopVideo();
-                                player.destroy();
-                                player = null;
-                            }, 500);
-                            break;
-                    }
-                }
-            }
-        });
     }
 
     addProcessResultLine(success, commandString) {
@@ -68,8 +32,7 @@ class SoundActivityScreen {
         let messageText = message.message;
 
         if (messageText.length < 2) { return false; }
-        if (await this.processSecretSound(messageUser, messageText)) { return true; }
-        if (messageText[0] !== "!" || messageText.includes(" ")) { return false; }
+        if (!messageText.includes("!")) { return false; }
 
         //  Check against sound playing limitations
         let isStreamer = (message.tags.badges && (message.tags.badges.broadcaster !== undefined) && (message.tags.badges.broadcaster === "1"));
@@ -83,49 +46,39 @@ class SoundActivityScreen {
             }
         }
 
-        let command = messageText.substr(1, messageText.length - 1);
-        let volume = 100;
-        if (this.togglesScreen) {
-            if ((messageText === "!soundslist") || (messageText === "!soundlist") || (messageText === "!sounds")) {
-                let soundsListOn = (!URL_OPTIONS || !URL_OPTIONS.soundsList || (URL_OPTIONS.soundsList === "true"));
-                if (soundsListOn) { this.togglesScreen.showSoundsList(); }
-                return true;
-            }
-            if (!this.togglesScreen.getSoundAllowed(command, true)) { return false; }
-            if (this.togglesScreen.getSoundDelayed(command, true)) {
-                return false;
-            }
-            volume = this.togglesScreen.getVolume(command, true);
-        }
-        let soundFile = this.createSoundFileSource(command);
-        if (!this.doesFileExist(soundFile)) { return false; }
+        //  Loop through all parts of the message, searching for any sound commands
+        let messageParts = messageText.split(" ");
+        for (let i = 0; i < messageParts.length; ++i) {
+            let part = messageParts[i];
+            if (part[0] !== "!") { continue; }
+            if (part.length < 2) { continue; }
 
-        let result = await this.playLocalSound(messageUser, soundFile, command, volume);
-        if (this.togglesScreen && result) { this.togglesScreen.setSoundPlayed(command, false); }
-        return result;
-    }
-
-    async processSecretSound(messageUser, message) {
-        if (messageUser.toLowerCase() !== "drewthebear") { return false; }
-        
-        let messageArgs = message.split(" ");
-        if ((messageArgs.length === 3) && (messageArgs[0] === "!yt")) {
-            this.youtubeToggles[messageArgs[1]] = messageArgs[2];
-            return;
-        }
-        else {
-            let keys = Object.keys(this.youtubeToggles);
-            //console.log(keys);
-            for (let i = 0; i < keys.length; ++i) {
-                if (messageArgs.includes(keys[i])) {
-                    return this.playYoutubeSound(this.youtubeToggles[keys[i]]);
+            let command = part.substr(1, part.length - 1);
+            let volume = 100;
+            if (this.togglesScreen) {
+                //  If the user is requesting the sounds list, and it is enabled, show the list in chat
+                if (["soundslist", "soundlist", "sounds"].includes(command)) {
+                    let soundsListOn = (!URL_OPTIONS || !URL_OPTIONS.soundsList || (URL_OPTIONS.soundsList === "true"));
+                    if (soundsListOn) { this.togglesScreen.showSoundsList(); }
+                    return true;
                 }
+                if (!this.togglesScreen.getSoundAllowed(command, true)) { return false; }
+                if (this.togglesScreen.getSoundDelayed(command, true)) { return false; }
+                volume = this.togglesScreen.getVolume(command, true);
             }
+            let soundFile = this.createSoundFileSource(command);
+            if (!this.doesFileExist(soundFile)) { continue; }
+    
+            let result = await this.playLocalSound(messageUser, soundFile, command, volume);
+            if (!result) { continue; }
+            if (this.togglesScreen && result) { this.togglesScreen.setSoundPlayed(command, false); }
+            return result;
         }
+        return false;
     }
 
     createSoundFileSource(sound) {
-        return ("./Sounds/" /*+ SOUNDS_FOLDER_PATH*/ + sound + ".mp3");
+        return ("./Sounds/" + sound + ".mp3");
     }
 
     doesFileExist(soundFile) {
