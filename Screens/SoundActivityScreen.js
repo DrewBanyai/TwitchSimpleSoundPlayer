@@ -31,6 +31,7 @@ class SoundActivityScreen {
         let messageUser = message.username;
         let messageText = message.message;
 
+        if (messageUser === "nightbot") { return false; }
         if (messageText.length < 2) { return false; }
         if (!messageText.includes("!")) { return false; }
 
