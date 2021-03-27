@@ -20,8 +20,14 @@ class SoundTogglesScreen {
         if (doNotCreate) { return null; }
 
         this.soundToggles[soundName] = new SoundToggle(soundName);
-        if (this.content) { this.content.appendChild(this.soundToggles[soundName].content); }
+        if (this.content) { this.content.appendChild(this.soundToggles[soundName].content); this.sortChildren(); }
         return this.soundToggles[soundName];
+    }
+
+    sortChildren() {
+        var list = this.content;
+
+        [...list.children].sort((a,b)=>a.id>b.id?1:-1).forEach(node=>list.appendChild(node));
     }
 
     addSoundsList(soundList) { for (let i = 0; i < soundList.length; ++i) { this.getSoundToggle(soundList[i]); } }
