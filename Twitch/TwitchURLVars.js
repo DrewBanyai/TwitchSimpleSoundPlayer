@@ -27,4 +27,5 @@ let URL_OPTIONS = getOptionsInURL();
 
 //  If new URL arguments are put in the URL, this will grab those and override the ones set in code (if any)
 if (URL_OPTIONS && URL_OPTIONS.token) { token = "oauth:" + URL_OPTIONS.token; }
+if (URL_OPTIONS && URL_OPTIONS.username) { username = URL_OPTIONS.username; }
 if (URL_OPTIONS && URL_OPTIONS.channel) { channel = URL_OPTIONS.channel; }

@@ -23,7 +23,7 @@ class TwitchController {
     }
 
     static async Connect(twitchChannel, twitchToken) {
-        //  Store off the given channel, username, and token
+        //  Store off the given channel, and token
         channel = twitchChannel.toLowerCase();
         token = twitchToken;
 
@@ -64,7 +64,7 @@ class TwitchController {
         if (twitchMessageCallbacks.hasOwnProperty(message.event)) { if (twitchMessageCallbacks[message.event](message)) return; }
 
         switch (message.event) {
-            case "PING":                        if (message.channel === "tmi.twitch.tv") TwitchController.SendChatMessage("tmi.twitch.tv", "PONG");                 break;
+            case "PING":                            if (message.channel === "tmi.twitch.tv") TwitchController.SendChatMessage("tmi.twitch.tv", "PONG");                 break;
             case "PONG":
             case "CAP":                 
             case "001":
