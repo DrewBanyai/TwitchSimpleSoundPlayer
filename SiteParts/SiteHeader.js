@@ -18,7 +18,6 @@ class SiteHeader {
             style: { height: "100%", display: "inline-flex", float: "left", },
         });
         this.centeredHeader.appendChild(siteNameBox.content);
-        //  TODO: Make this a link to the main page?
 
         let loginButtonBox = new Container({
             id: "SiteLoginLogoutBox",
@@ -34,7 +33,6 @@ class SiteHeader {
             }
         });
         this.centeredHeader.appendChild(loginButtonBox.content);
-        //  TODO: Make the login / logout button swap on login
 
         //  Load the different parts of the header menu
         this.loadSiteNameBox(siteNameBox);
