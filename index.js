@@ -20,7 +20,7 @@ let OPTIONS_WHO_IS_ALLOWED = "Anyone";
 
 let getStorageTSSP = () => {
 	let storageTSSP = localStorage.getItem('DrewTheBear_TSSP');
-	return (storageTSSP ? JSON.parse(storageTSSP) : { channelName: "", oauth: "", folderPath: "" });
+	return (storageTSSP ? JSON.parse(storageTSSP) : {});
 }
 
 let setStorageTSSP = (storageData) => {
