@@ -55,12 +55,12 @@ class SiteHeader {
         container.appendChild(siteTitleLabel.content);
 
         let drewTheBearIcon = new Image({ id: "DrewTheBearIcon", style: { width: "36px", height: "36px", margin: "5px", borderRadius: "50%", border: "3px solid rgb(200, 200, 200)", cursor: "pointer", }});
-        drewTheBearIcon.setValue("./Images/DrewTheBear_Icon.png");
+        drewTheBearIcon.setValue("https://i.imgur.com/R1JYDil.png");
         drewTheBearIcon.content.onclick = () => { window.open("https://twitch.tv/DrewTheBear"); }
         container.appendChild(drewTheBearIcon.content);
 
         let githubIcon = new Image({ id: "GithubIcon", style: { width: "36px", height: "36px", margin: "5px", borderRadius: "50%", border: "3px solid rgb(200, 200, 200)", cursor: "pointer", }});
-        githubIcon.setValue("./Images/Github_Icon.png");
+        githubIcon.setValue("https://i.imgur.com/56rWtbj.png");
         githubIcon.content.onclick = () => { window.open("https://github.com/DrewBanyai/TwitchSimpleSoundPlayer"); }
         container.appendChild(githubIcon.content);
     }
