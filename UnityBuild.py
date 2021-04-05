@@ -10,11 +10,13 @@ releaseFolder = "Release"
 ProjectName = "TSSP"
 
 # Ensure the "Release" folder exists and has the sounds folder copied over to it
-shutil.rmtree(releaseFolder)
-time.sleep(1)
+if (os.path.isdir(releaseFolder) == True):
+    shutil.rmtree(releaseFolder)
+    time.sleep(1)
 if (os.path.isdir(releaseFolder) == False):
     os.mkdir(releaseFolder)
 shutil.copytree("Sounds", releaseFolder + "/Sounds")
+shutil.copy("SoundsList.js", releaseFolder + "/SoundsList.js")
 
 #  Open index.htm and read each line through, writing off what is needed
 with open("./index.htm", "r", encoding="utf-8") as indexFP:
