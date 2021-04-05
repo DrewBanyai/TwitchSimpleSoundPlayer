@@ -16,7 +16,7 @@ if (os.path.isdir(releaseFolder) == True):
 if (os.path.isdir(releaseFolder) == False):
     os.mkdir(releaseFolder)
 shutil.copytree("Sounds", releaseFolder + "/Sounds")
-shutil.copy("SoundsList.js", releaseFolder + "/SoundsList.js")
+shutil.copy("Settings.js", releaseFolder + "/Settings.js")
 
 #  Open index.htm and read each line through, writing off what is needed
 with open("./index.htm", "r", encoding="utf-8") as indexFP:

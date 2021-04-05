@@ -59,8 +59,8 @@ class SoundActivityScreen {
             if (this.togglesScreen) {
                 //  If the user is requesting the sounds list, and it is enabled, show the list in chat
                 if (["soundslist", "soundlist", "sounds"].includes(command)) {
-                    let soundsListOn = (!URL_OPTIONS || !URL_OPTIONS.soundsList || (URL_OPTIONS.soundsList === "true"));
-                    if (soundsListOn) { this.togglesScreen.showSoundsList(); }
+                    let soundsListDisabled = (SETTINGS && SETTINGS.TWITCH_DATA && SETTINGS.TWITCH_DATA.SOUND_LIST_DISABLED.toLowerCase() === "true");
+                    if (!soundsListDisabled) { this.togglesScreen.showSoundsList(); }
                     return true;
                 }
                 if (!this.togglesScreen.getSoundAllowed(command, true)) { return false; }

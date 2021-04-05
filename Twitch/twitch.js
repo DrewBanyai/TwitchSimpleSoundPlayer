@@ -2106,4 +2106,3 @@ var TwitchJs = function() {
         }, e.Chat = oa, e.Api = xa, e
     }()
 }();
-//# sourceMappingURL=twitch.js.map

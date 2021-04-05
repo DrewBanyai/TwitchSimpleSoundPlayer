@@ -1,8 +1,6 @@
 class SiteHeader {
     constructor(options) {
         this.options = options;
-        this.loginButton = null;
-        this.loginBox = null;
         this.centeredHeader = null;
         this.content = this.generateContent();
     }
@@ -19,35 +17,10 @@ class SiteHeader {
         });
         this.centeredHeader.appendChild(siteNameBox.content);
 
-        let loginButtonBox = new Container({
-            id: "SiteLoginLogoutBox",
-            style: { height: "100%", display: "inline-flex", float: "right", cursor: "pointer", },
-            events: {
-                click: () => {
-                    if (this.loginBox === null) {
-                        this.loginBox = new LoginBox({ loginCallback: () => { this.removeLoginHeaderButton(); } });
-                        this.centeredHeader.appendChild(this.loginBox.content);
-                    }
-                    else { this.removeLoginBox(); }
-                }
-            }
-        });
-        this.centeredHeader.appendChild(loginButtonBox.content);
-
         //  Load the different parts of the header menu
         this.loadSiteNameBox(siteNameBox);
-        this.loadSiteLoginLogoutBox(loginButtonBox);
 
         return container.content;
-    }
-
-    removeLoginHeaderButton() {
-        this.loginButton.content.style.display = "none";
-    }
-
-    removeLoginBox() {
-        this.centeredHeader.removeChild(this.loginBox.content);
-        this.loginBox = null;
     }
 
     async loadSiteNameBox(container) {
@@ -63,10 +36,5 @@ class SiteHeader {
         githubIcon.setValue("https://i.imgur.com/56rWtbj.png");
         githubIcon.content.onclick = () => { window.open("https://github.com/DrewBanyai/TwitchSimpleSoundPlayer"); }
         container.appendChild(githubIcon.content);
-    }
-
-    async loadSiteLoginLogoutBox(container) {
-        this.loginButton = new Label({ id: "SiteLoginButton", attributes: { value: "Login", }, style: { fontFamily: "Open Sans Condensed", fontSize: "18px", padding: "13px 0px 0px 0px", color: "rgb(255, 255, 255)", display: "inline-flex", userSelect: "pointer", }, });
-        container.appendChild(this.loginButton.content);
     }
 }

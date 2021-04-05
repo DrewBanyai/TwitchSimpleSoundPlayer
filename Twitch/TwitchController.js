@@ -11,6 +11,8 @@ const SHOW_SUPPORT_MESSAGES = true;
 const SHOW_PROBLEM_MESSAGES = true;
 const SHOW_UNHANDLED_MESSAGES = true;
 
+let myUsername = "";
+
 class TwitchController {
     constructor() {}
 
