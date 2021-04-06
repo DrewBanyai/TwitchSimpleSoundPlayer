@@ -33,20 +33,20 @@ class SoundTogglesScreen {
     addSoundsList(soundList) { for (let i = 0; i < soundList.length; ++i) { this.getSoundToggle(soundList[i]); } }
 
     showSoundsList() {
-        if (!soundList) { return; }
+        if (!SETTINGS.SOUNDS_LIST) { return; }
         
         let messageTexts = [];
         let messageTextIndex = 0;
-        for (let i = 0; i < soundList.length; ++i) {
+        for (let i = 0; i < SETTINGS.SOUNDS_LIST.length; ++i) {
             if (messageTexts.length === messageTextIndex) { messageTexts.push(""); }
-            if ((messageTexts[messageTextIndex] + ", !" + soundList[i]).length > 500) {
+            if ((messageTexts[messageTextIndex] + ", !" + SETTINGS.SOUNDS_LIST[i]).length > 500) {
                 messageTextIndex += 1;
                 if (messageTexts.length === messageTextIndex) { messageTexts.push(""); }
             }
 
             if (messageTexts[messageTextIndex].length > 0) { messageTexts[messageTextIndex] += ", !"; }
             else messageTexts[messageTextIndex] += "!";
-            messageTexts[messageTextIndex] += soundList[i];
+            messageTexts[messageTextIndex] += SETTINGS.SOUNDS_LIST[i];
         }
 
         //  Now that we have the list(s) of commands, send them out
